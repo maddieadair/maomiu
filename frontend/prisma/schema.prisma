@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model charParse_charword {
+  id          BigInt @id @default(autoincrement())
+  traditional String
+  simplified  String
+  english     String
+  pinyin      String
+
+  @@unique([traditional, simplified, english, pinyin], map: "charParse_charword_traditional_simplified_e_2c515d57_uniq")
+}

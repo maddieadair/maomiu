@@ -3,11 +3,6 @@ import Image from "next/image";
 import React from "react";
 import { useState, useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { RxCrossCircled } from "react-icons/rx";
-import { PiWarningLight } from "react-icons/pi";
-import { HiOutlineCheckCircle } from "react-icons/hi";
-
-
 
 export default function Home(props) {
   const [word, setWord] = useState("");
@@ -27,26 +22,6 @@ export default function Home(props) {
   const [infoFields, setInfoFields] = useState(false);
 
   const [generateWord, setGenerateWord] = useState(true);
-
-  const [disableWord, setDisableWord] = useState(true);
-
-  const vowels = ['a', 'e', 'i', 'o', 'u', 'ü'];
-
-  const charNums = {
-    'a' : "āáǎà",
-    'e' : "ēéěè",
-    'i' : "īíǐì",
-    'o' :  "ōóǒò",
-    'u' : "ūúǔù",
-    'ü' : "ǖǘǚǜ",
-    'A' :  "ĀÁǍÀ",
-    'E' : "ĒÉĚÈ",
-    'I' : "ĪÍǏÌ",
-    'O' : "ŌÓǑÒ",
-    'U' : "ŪÚǓÙ",
-    'Ü' :  "ǕǗǙǛ"
-  }
-
 
   const chars = {
     a1: "ā",
@@ -164,7 +139,7 @@ export default function Home(props) {
                 }
             }*/
     
-        /*for (let i = 0; i < newChArr.length; i++) {
+        for (let i = 0; i < newChArr.length; i++) {
           console.log(newChArr[i]);
           for (const key in chars) {
             if (!chars.hasOwnProperty(key)) {
@@ -173,39 +148,8 @@ export default function Home(props) {
     
             newChArr[i] = newChArr[i].replace(key, chars[key]);
           }
-        }*/
-        
-
-        for (let j = 0; j < newChArr.length; j++){
-            let lastIndex = newChArr[j].length - 1;
-            let tone = newChArr[j][lastIndex];
-            console.log("tone:", tone)
-
-            newChArr[j] = newChArr[j].slice(0,-1)
-            console.log("newChar:", newChArr[j])
-
-            if (newChArr[j].includes('iu') || newChArr[j].includes('ui')){
-                newChArr[j] = newChArr[j].replace('u', charNums['u'][tone-1])
-            }
-            else if (newChArr[j].includes('IU') || newChArr[j].includes('UI')){
-                newChArr[j] = newChArr[j].replace('U', charNums['U'][tone-1])
-            }
-            else {
-                for (const key in charNums){
-                    if (!charNums.hasOwnProperty(key)){
-                        continue;
-                    }
-
-                    if (newChArr[j].includes(key)){
-                        newChArr[j] = newChArr[j].replace(key, charNums[key][tone-1])
-                        break;
-                    }
-                }
-            }
-
-           }
-          
-        //console.log(newChArr);
+        }
+        console.log(newChArr);
         let newPinyin = newChArr.join(" ");
         setPinyin(newPinyin);
         console.log("newpinyin:",newPinyin)
@@ -252,9 +196,7 @@ export default function Home(props) {
         console.log("has error");
         const { error } = er;
         console.log("error:", error);
-        setWordError("");
-        setErrors({});
-        setErrorMessage("Could not find word. Please enter a valid word.");
+        setErrorMessage("word not found");
         //setFoundWord(false);
       } else {
       /*if (!res.ok){
@@ -267,7 +209,7 @@ export default function Home(props) {
             setErrorMessage("word not found")
             //throw new Error('failed to fetch data')
         }*/
-        setErrorMessage("Word found.");
+        setErrorMessage("worked");
         //const data = await res.json();
         //console.log(data);
         console.log("er: ", er);
@@ -288,10 +230,38 @@ export default function Home(props) {
     return worked;
   };
 
-  useEffect(() => {
-    if (!generateWord){
+  
 
-        console.log(pinyin)
+  const generateInputs = async (e) => {
+    let tempErrors = {};
+    let isValid = true;
+
+    if (word.length <= 0) {
+      tempErrors["word"] = true;
+      isValid = false;
+      setWordError("* input too short!");
+      setErrors({ ...tempErrors });
+      //console.log("errors", errors);
+      //console.log("isValid", isValid)
+    } else if (!/^[\u4E00-\u9FCC]+$/i.test(word)) {
+      tempErrors["word"] = true;
+      isValid = false;
+      setWordError("* invalid word");
+      setErrors({ ...tempErrors });
+      console.log("invalid word");
+    } else {
+        //const found = sendWord();
+        //console.log("found:",found)
+      if (await sendWord()) {
+        console.log("sendWord returned true");
+        tempErrors = {};
+        isValid = true;
+        setWordError("");
+        setErrors({});
+        setGenerateState(false);
+        setInfoFields(true);
+        setWordLength(word.length);
+        setGenerateWord(false);
 
         /*for (let ind = 0; ind < word.length; ind++) {
                     let para = document.createElement("p");
@@ -315,52 +285,20 @@ export default function Home(props) {
           //console.log("ps[inds]:", ps[inds])
           charArray.push({
             hanChar: word[inds],
-            charPin: ps[inds],
+            charPin: "",
           });
         }
         setPinArr(true);
         console.log("CHAR ARRAY", charArray);
-        setGenerateWord(true)
-    }
-},[generateWord, pinyin, word, charArray]);
-
-  const generateInputs = async (e) => {
-    let tempErrors = {};
-    let isValid = true;
-
-    setErrorMessage("");
-
-    if (word.length <= 0) {
-      tempErrors["word"] = true;
-      isValid = false;
-      setWordError("Input too short. Please enter a word that is at least 1 character long.");
-      setErrors({ ...tempErrors });
-      //console.log("errors", errors);
-      //console.log("isValid", isValid)
-    } else if (!/^[\u4E00-\u9FCC]+$/i.test(word)) {
-      tempErrors["word"] = true;
-      isValid = false;
-      setWordError("Invalid word. Please enter a word in Chinese.");
-      setErrors({ ...tempErrors });
-      console.log("invalid word");
-    } else {
-      if (await sendWord()) {
-        console.log("sendWord returned true");
-        tempErrors = {};
-        isValid = true;
-        setWordError("");
-        setErrors({});
-        setGenerateState(false);
-        setInfoFields(true);
-        setWordLength(word.length);
-        setGenerateWord(false);
-        setDisableWord(false);
-        
       } else {
         console.log("send word false");
       }
     }
   };
+
+  const createPinArr = () => {
+    
+  }
 
   const handleChangeWord = (e) => {
     setWord(e.target.value);
@@ -408,52 +346,42 @@ export default function Home(props) {
       setGenerateState(true);
       setPinArr(false);
       setGenerateWord(true);
-      setDisableWord(true);
     } else {
       console.log("not valid");
     }
   };
 
   const handleValidation = () => {
-
-    setErrors({});
     let tempErrors = {};
-
-    setCharPinError("");
-    setPinyinError("");
-    setEngError("");
-
     let isValid = true;
 
     if (word.length <= 0) {
       tempErrors["word"] = true;
       isValid = false;
-      setWordError("Input too short. Please enter a word that is at least 1 character long.");
+      setWordError("* input too short!");
     }
-
     if (!/^[\u4E00-\u9FCC]+$/i.test(word)) {
       tempErrors["word"] = true;
       isValid = false;
-      setWordError("Invalid word. Please enter a word in Chinese.");
+      setWordError("* invalid word");
       console.log("invalid word");
     }
-
     if (pinyin.length <= 0) {
       tempErrors["pinyin"] = true;
       isValid = false;
-      setPinyinError("Pinyin field too short.");
+      setPinyinError("* pinyin too short!");
     }
-
     if (engTrans.length <= 0) {
       tempErrors["engTrans"] = true;
       isValid = false;
-      setEngError("English Translation too short.");
+      setEngError("* eng trans too short!");
     }
     const val = validateCharPin();
     if (!val) {
+      console.log("VALIDATECHARPIN NOT VALID");
       tempErrors["charPin"] = true;
       isValid = false;
-      setCharPinError("Missing pinyin field(s).");
+      setCharPinError("* missing pinyin field(s)");
     }
 
     setErrors({ ...tempErrors });
@@ -519,7 +447,6 @@ export default function Home(props) {
       setEngTrans("");
       setEdit(false);
       setInfoFields(false);
-      setCharArray([])
       if (inputWords.length <= 0) {
         setGenerateState(true);
         setButtonState("add");
@@ -532,16 +459,15 @@ export default function Home(props) {
         setCurrArr([]);
         setPinArr(false);
         setGenerateWord(true);
-        setDisableWord(true)
       }
     }
     //setWordError("");
     //setErrors({});
   };
 
-
   const changeInput = (index, e) => {
     setCurrArr(charsArrs[index]);
+    console.log("CURRENT CHAR ARR", currentArr);
 
     setEdit(true);
     setButtonState("update");
@@ -549,13 +475,16 @@ export default function Home(props) {
     setInfoFields(true);
     setPinArr(true);
     setGenerateWord(false);
-    setDisableWord(false);
-    console.log("current i:", i);
+    console.log("i:", i);
     let data = [...inputWords];
     let value = data[index];
     let text = value.word;
     let pinyinIn = value.pinyin;
     let engIn = value.engTrans;
+    console.log("index", index);
+    console.log(text);
+    console.log(pinyinIn);
+    console.log(engIn);
     setWord(text);
     setPinyin(pinyinIn);
     setEngTrans(engIn);
@@ -575,14 +504,11 @@ export default function Home(props) {
     }
 
     setCharArray(newState);
-
   };
 
   const charArrOnChange = (e, ind) => {
-    
     const newState = [...charsArrs];
 
-    console.log("newState", newState)
     for (const key in chars) {
       if (!chars.hasOwnProperty(key)) {
         continue;
@@ -594,6 +520,7 @@ export default function Home(props) {
     }
 
     setCharsArr(newState);
+
     /*const {value, name} = e.target;
         const newState = [...charsArrs];
         console.log("charsArrs[i]", charsArrs[i])
@@ -609,7 +536,7 @@ export default function Home(props) {
         if (charArray[index].charPin === "") {
           isValid = false;
           console.log("TOO SHORT", index);
-          return false;
+          return;
         }
       });
     } else if (edit) {
@@ -617,7 +544,7 @@ export default function Home(props) {
         if (currentArr[index].charPin === "") {
           isValid = false;
           console.log("TOO SHORT", index);
-          return false;
+          return;
         }
       });
     }
@@ -633,7 +560,6 @@ export default function Home(props) {
     setCharArray([]);
     setGenerateState(true);
     setGenerateWord(true);
-    setDisableWord(true);
     setPinArr(false);
     setInfoFields(false);
     setButtonState("add");
@@ -642,15 +568,12 @@ export default function Home(props) {
     setPinyinError("");
     setCharPinError("");
     setErrors({});
-    setErrorMessage("");
   };
 
   console.log("CURRENT INPUT, INPUTWORDS", inputWords);
   //console.log(inputWords.length)
   console.log("CHARSARRS", charsArrs);
   console.log("CURRENTARR", currentArr);
-  console.log("charArray:",charArray)
-  console.log("i:", i)
 
   return (
     <div className="flex flex-col justify-start items-start m-10 gap-y-6 sm:m-20">
@@ -882,35 +805,16 @@ export default function Home(props) {
                   value={word}
                   id="inputWord"
                   name="add"
-                  disabled={!disableWord}
+                  disabled={!generateWord}
                   className="rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full disabled:border-stone-300 disabled:bg-slate-50 disabled:cursor-not-allowed"
                   onKeyDown={(e) => {
                     e.key === "Enter" && handleClick(i, e);
                   }}
                 />
               </div>
-
               {errors?.word && !edit && (
-                <div className="flex flex-row space-x-4 border border-yellow-400 rounded p-3 bg-yellow-50">
-                    <PiWarningLight className="stroke-[8px] text-yellow-700 relative top-[1px]" size={20}/>
-                    <div className="text-yellow-700"><span className="font-semibold">Input Error! </span>{wordError}</div>
-                </div>
+                <p className=" text-red-400">{wordError}</p>
               )}
-
-            {errorMessage === "Could not find word. Please enter a valid word."  && !edit  ? (
-                <div className="flex flex-row space-x-4 border border-red-400 rounded p-3 bg-red-50">
-                    <RxCrossCircled className="stroke-[0.5px] text-red-700 relative top-[2px]" size={20}/>
-                    <div className="text-red-700"><span className="font-semibold">Data Error! </span>{errorMessage}</div>
-                </div>
-              ) 
-              : errorMessage === "Word found." && !edit ? 
-                <div className="flex flex-row space-x-4 border border-green-600 rounded p-3 bg-green-50">
-                    <HiOutlineCheckCircle className="stroke-2 text-green-800 relative top-[1px]" size={20}/>
-                <div className="text-green-800"><span className="font-semibold">Success! </span>{errorMessage}</div>
-            </div>
-            : null}
-
-
 
               <button
                 type="button"
@@ -926,6 +830,13 @@ export default function Home(props) {
                 generate pinyin + eng trans
               </button>
 
+              {errorMessage === "" ? (
+                ""
+              ) : (
+                <div>
+                  <p>{errorMessage}</p>
+                </div>
+              )}
               <div
                 className={
                   generateState
@@ -966,7 +877,7 @@ export default function Home(props) {
                       type="text"
                       onChange={(e) => charPinOnChange(e, charInd)}
                       autoComplete="off"
-                      value={x.charPin}
+                      defaultValue={x.charPin}
                       placeholder="..."
                       className="w-full bg-white p-2 focus:outline-[#a66e6d] rounded-md border-2 border-stone-300"
                     />
@@ -996,7 +907,7 @@ export default function Home(props) {
                       type="text"
                       onChange={(e) => charArrOnChange(e, charInd)}
                       autoComplete="off"
-                      value={c.charPin}
+                      defaultValue={c.charPin}
                       //placeholder=".?"
                       className="w-full bg-white p-2 focus:outline-[#a66e6d] rounded-md border-2 border-stone-300"
                     />
@@ -1027,15 +938,14 @@ export default function Home(props) {
                   ></input>
                 </div>
                 {errors?.pinyin && (
-                  <p className="text-red-400">{pinyinError}</p>
+                  <p className=" text-red-400">{pinyinError}</p>
                 )}
 
                 <div className="flex flex-col gap-y-2">
                   <label htmlFor="pinyin" className="text-lg font-walsheimBold">
                     eng translation
                   </label>
-                  <textarea
-                    rows="1"
+                  <input
                     type="text"
                     id="eng-trans"
                     name="eng-trans"
@@ -1045,8 +955,8 @@ export default function Home(props) {
                       e.key === "Enter" && e.preventDefault();
                     }}
                     onChange={handleChangeEngTrans}
-                    className="overflow-scroll flex-wrap hover:h-32 h-11 transition-all duration-700 ease-in-out rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full"
-                  ></textarea>
+                    className="rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full"
+                  ></input>
                 </div>
                 {errors?.engTrans && (
                   <p className=" text-red-400">{engError}</p>

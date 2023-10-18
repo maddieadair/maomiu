@@ -3,10 +3,10 @@ from django.db import models
 # Create your models here.
 
 class CharWord(models.Model):
-    traditional = models.CharField(max_length = 20)
-    simplified = models.CharField(max_length = 20)    
-    english = models.CharField(max_length = 20)
-    pinyin = models.CharField(max_length = 20)
+    traditional = models.TextField()
+    simplified = models.TextField() 
+    english = models.TextField()
+    pinyin = models.TextField()
     
     class Meta:
         unique_together = ["traditional", "simplified", "english", "pinyin"]

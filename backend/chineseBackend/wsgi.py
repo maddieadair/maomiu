@@ -1,5 +1,5 @@
 """
-WSGI config for cswg project.
+WSGI config for chineseBackend project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cswg.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chineseBackend.settings')
 
 application = get_wsgi_application()

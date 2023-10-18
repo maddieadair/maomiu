@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse#, JsonResponse
-from chParse.models import CharWord
+from charParse.models import CharWord
 import json
 
 # Create your views here.
