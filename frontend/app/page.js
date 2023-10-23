@@ -6,8 +6,12 @@ import { AiOutlineClose } from "react-icons/ai";
 import { RxCrossCircled } from "react-icons/rx";
 import { PiWarningLight } from "react-icons/pi";
 import { HiOutlineCheckCircle } from "react-icons/hi";
-
-
+import { jsPDF } from "jspdf";
+import  "./fonts/TOBold-bold.js";
+import "./fonts/GTWalsheimPro-Medium-normal.js";
+import "./fonts/NotoSansSC-SemiBold-normal.js";
+import "./fonts/KaiTi-normal.js";
+import "./fonts/Classic Song ti Font-normal.js";
 
 export default function Home(props) {
   const [word, setWord] = useState("");
@@ -184,7 +188,11 @@ export default function Home(props) {
             newChArr[j] = newChArr[j].slice(0,-1)
             console.log("newChar:", newChArr[j])
 
-            if (newChArr[j].includes('iu') || newChArr[j].includes('ui')){
+            if (tone == 5){
+                console.log('tone 5 pass')
+                continue;
+            }
+            else if (newChArr[j].includes('iu') || newChArr[j].includes('ui')){
                 newChArr[j] = newChArr[j].replace('u', charNums['u'][tone-1])
             }
             else if (newChArr[j].includes('IU') || newChArr[j].includes('UI')){
@@ -643,7 +651,39 @@ export default function Home(props) {
     setCharPinError("");
     setErrors({});
     setErrorMessage("");
-  };
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(64);
+
+
+    let y = 1;
+    inputWords.forEach((element, index) => {
+        doc.setFont('Classic Song ti Font','normal');
+        doc.text(element.word, 10, (y*10));
+
+        doc.setFont('KaiTi');
+        doc.text(element.word, 10, (y*30));
+        doc.setFontSize(12);
+
+
+        doc.setFont('GTWalsheimPro-Medium','normal');
+        doc.text(element.pinyin, 20, (y*10));
+
+        doc.setFont('GTWalsheimPro-Medium','normal');
+        doc.text(element.engTrans, 10, (y*20));
+        doc.setLineDashPattern([0.5,2])
+        doc.line(10,25,60,25)
+        y = y+2;
+    });
+    doc.output('dataurlnewwindow');
+
+  }
+
 
   console.log("CURRENT INPUT, INPUTWORDS", inputWords);
   //console.log(inputWords.length)
@@ -675,7 +715,7 @@ export default function Home(props) {
       </p>
 
       <div className="w-full sm:w-full lg:w-fit">
-        <form className="space-y-20" action="/">
+        <form className="space-y-20" action="/" id= "forms">
           <div className="space-y-6">
             <fieldset className="border-2 border-sesame rounded-md p-4 w-full">
               <legend className="font-walsheimBold bg-sesame text-cozyWhite px-2">
@@ -685,11 +725,11 @@ export default function Home(props) {
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice1"
-                    name="contact"
+                    id="guide_none"
+                    name="guide"
                     value="none"
                   />
-                  <label htmlFor="contactChoice1">none</label>
+                  <label htmlFor="guide_none">none</label>
                   <Image
                     src="/plain-box.svg"
                     alt="plain box"
@@ -702,11 +742,11 @@ export default function Home(props) {
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice2"
-                    name="contact"
+                    id="guide-cross"
+                    name="guide"
                     value="cross"
                   />
-                  <label htmlFor="contactChoice2">cross</label>
+                  <label htmlFor="guide-cross">cross</label>
                   <Image
                     src="/cross-grid.svg"
                     alt="cross box"
@@ -719,11 +759,11 @@ export default function Home(props) {
                 <div className="space-x-2 flex fex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="guide-star"
+                    name="guide"
                     value="star"
                   />
-                  <label htmlFor="contactChoice3">star</label>
+                  <label htmlFor="guide-star">star</label>
                   <Image
                     src="/star-grid.svg"
                     alt="star box"
@@ -736,11 +776,11 @@ export default function Home(props) {
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="cross-star"
+                    name="guide"
                     value="cross-star"
                   />
-                  <label htmlFor="contactChoice3">cross + star</label>
+                  <label htmlFor="cross-star">cross + star</label>
                   <Image
                     src="/both-grid.svg"
                     alt="both box"
@@ -760,31 +800,31 @@ export default function Home(props) {
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice1"
-                    name="contact"
+                    id="word-once"
+                    name="layout"
                     value="word-once"
                   />
-                  <label htmlFor="contactChoice1">word (once)</label>
+                  <label htmlFor="word-once">word (once)</label>
                 </div>
 
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice2"
-                    name="contact"
-                    value="woord-full"
+                    id="word-full"
+                    name="layout"
+                    value="word-full"
                   />
-                  <label htmlFor="contactChoice2">word (full line)</label>
+                  <label htmlFor="word-full">word (full line)</label>
                 </div>
 
                 <div className="space-x-2 flex fex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="word-extra"
+                    name="layout"
                     value="word-extra"
                   />
-                  <label htmlFor="contactChoice3">
+                  <label htmlFor="word-extra">
                     word (full line + extra line)
                   </label>
                 </div>
@@ -792,31 +832,31 @@ export default function Home(props) {
                 <div className="space-x-2 flex fex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="word-fill"
+                    name="layout"
                     value="word-fill"
                   />
-                  <label htmlFor="contactChoice3">word (fill)</label>
+                  <label htmlFor="word-fill">word (fill)</label>
                 </div>
 
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="stroke-once"
+                    name="layout"
                     value="stroke-once"
                   />
-                  <label htmlFor="contactChoice3">stroke order (once)</label>
+                  <label htmlFor="stroke-once">stroke order (once)</label>
                 </div>
 
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="stroke-extra"
+                    name="layout"
                     value="stroke-extra"
                   />
-                  <label htmlFor="contactChoice3">
+                  <label htmlFor="stroke-extra">
                     stroke order + extra line
                   </label>
                 </div>
@@ -824,11 +864,11 @@ export default function Home(props) {
                 <div className="space-x-2 flex flex-row">
                   <input
                     type="radio"
-                    id="contactChoice3"
-                    name="contact"
+                    id="stroke-fill"
+                    name="layout"
                     value="stroke-fill"
                   />
-                  <label htmlFor="contactChoice3">stroke order (fill)</label>
+                  <label htmlFor="stroke-fill">stroke order (fill)</label>
                 </div>
               </div>
             </fieldset>
@@ -840,11 +880,11 @@ export default function Home(props) {
               <div className="flex flex-row gap-x-2">
                 <input
                   type="checkbox"
-                  id="contactChoice3"
-                  name="contact"
-                  value="pinyin"
+                  id="include-pinyin"
+                  name="include-pinyin"
+                  value="include-pinyin"
                 />
-                <label htmlFor="contactChoice3">include pinyin</label>
+                <label htmlFor="include-pinyin">include pinyin</label>
               </div>
             </fieldset>
 
@@ -855,11 +895,11 @@ export default function Home(props) {
               <div className="flex flex-row gap-x-2">
                 <input
                   type="checkbox"
-                  id="contactChoice3"
-                  name="contact"
-                  value="engTrans"
+                  id="include-eng"
+                  name="include-eng"
+                  value="include-eng"
                 />
-                <label htmlFor="contactChoice3">include eng translation</label>
+                <label htmlFor="include-eng">include eng translation</label>
               </div>
             </fieldset>
           </div>
@@ -871,7 +911,7 @@ export default function Home(props) {
                 <h2 className="">max. 30 words</h2>
               </div>
               <div className="flex flex-col gap-y-2">
-                <label htmlFor="pinyin" className="text-lg font-walsheimBold">
+                <label htmlFor="word" className="text-lg font-walsheimBold">
                   characters{" "}
                   <span className="font-takeoffBold text-lg">汉字</span>
                 </label>
@@ -880,8 +920,8 @@ export default function Home(props) {
                   autoComplete="off"
                   onChange={handleChangeWord}
                   value={word}
-                  id="inputWord"
-                  name="add"
+                  id="word"
+                  name="word"
                   disabled={!disableWord}
                   className="rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full disabled:border-stone-300 disabled:bg-slate-50 disabled:cursor-not-allowed"
                   onKeyDown={(e) => {
@@ -912,6 +952,7 @@ export default function Home(props) {
 
 
 
+            <div className = "flex flex-row space-x-4">
               <button
                 type="button"
                 onClick={(e) => {
@@ -925,6 +966,19 @@ export default function Home(props) {
               >
                 generate pinyin + eng trans
               </button>
+
+              <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className={
+                    !edit
+                      ? "mr-4 text-xl  hover:text-[#a66e6d] text-sesame font-bold transition ease-in-out duration-500"
+                      : "hidden"
+                  }
+                >
+                  submit
+                </button>
+                </div>
 
               <div
                 className={
@@ -964,6 +1018,8 @@ export default function Home(props) {
                     </div>
                     <input
                       type="text"
+                      id="charArray"
+                      name="charArray"
                       onChange={(e) => charPinOnChange(e, charInd)}
                       autoComplete="off"
                       value={x.charPin}
@@ -994,6 +1050,8 @@ export default function Home(props) {
                     </div>
                     <input
                       type="text"
+                      id="currentArr"
+                      name="currentArr"
                       onChange={(e) => charArrOnChange(e, charInd)}
                       autoComplete="off"
                       value={c.charPin}
@@ -1045,7 +1103,7 @@ export default function Home(props) {
                       e.key === "Enter" && e.preventDefault();
                     }}
                     onChange={handleChangeEngTrans}
-                    className="overflow-scroll flex-wrap hover:h-32 h-11 transition-all duration-700 ease-in-out rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full"
+                    className="flex-wrap hover:h-32 h-11 transition-all duration-700 ease-in-out rounded-md border-2 border-stone-300 focus:outline-[#a66e6d] p-2 w-full"
                   ></textarea>
                 </div>
                 {errors?.engTrans && (

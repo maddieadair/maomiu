@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'chineseBackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'chinese-characters',
-        'USER': 'postgres',
-        'PASSWORD': 'Qianxis8292!',
-        'HOST:': 'localhost',
-        'PORT': '5432',
+        'NAME': 
+        'USER': 
+        'PASSWORD': 
+        'HOST:': 
+        'PORT': 
     }
 }
 
