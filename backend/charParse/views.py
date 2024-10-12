@@ -75,6 +75,7 @@ def findWord(word):
 def index(request):
 
     inputW = request.GET["word"]
+    print(inputW)
 
     data = findWord(inputW)
 

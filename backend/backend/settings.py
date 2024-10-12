@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-lcv-r(g^3ytq@=gp!yd2g=_n87tk6d@06*vet)0*v2sr_+4l4+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['https://maomiu-433c7bfaa649.herokuapp.com', 'maomiu-433c7bfaa649.herokuapp.com', 'localhost', '0.0.0.0', '127.0.0.1:8000', '*']
 
