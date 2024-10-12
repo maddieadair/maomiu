@@ -1,69 +1,97 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from .models import CharWord
+from django.http import HttpResponse, JsonResponse
+from django.conf import settings
+import json
 
-list_of_dicts = []
+def helper(word):
+    with open(settings.CEDICT_PATH) as file:
+        lines = file.read().splitlines()
 
-# Create your views here.
-with open('/Users/maddieadair/stroke-order-ws-gen/backend/charParse/cedict_ts.u8') as file:
-    text = file.read()
-    lines = text.split('\n')
-    dict_lines = list(lines)
+    for index, line in enumerate(lines):
+        if ((line.split(" ",1)[0] == word) or (line.split(" ")[1] == word)):
+            parsed = {}
+            line = line.rstrip('/')
+            line = line.split('/')
+            
+            english = '; '.join(line[1:])
+            twoDefs = "; ".join(english.split("; ", 2)[:2])
+            if (len(twoDefs) > 60):
+                english = "; ".join(english.split("; ", 1)[:1])
+            else:
+                english = twoDefs
+            print("english", english)
 
-def parse_line(line):
-    parsed = {}
-    if line == '':
-        dict_lines.remove(line)
-        return 0
-    
-    line = line.rstrip('/')
-    line = line.split('/')
+            char_and_pinyin = line[0].split('[')
+            characters = char_and_pinyin[0]
+            characters = characters.split()
 
-    if len(line) <= 1:
-        return 0
-    
-    english = '; '.join(line[1:])
-    char_and_pinyin = line[0].split('[')
-    characters = char_and_pinyin[0]
-    characters = characters.split()
-    traditional = characters[0]
-    simplified = characters[1]
-    pinyin = char_and_pinyin[1]
-    pinyin = pinyin.rstrip()
-    pinyin = pinyin.rstrip("]")
-    parsed['traditional'] = traditional
-    parsed['simplified'] = simplified
-    parsed['pinyin'] = pinyin
-    parsed['english'] = english
-    list_of_dicts.append(parsed)
+            if word == characters[0]:
+                print("trad")
+                hanzi = characters[0]
 
-def remove_surnames():
-    for x in range(len(list_of_dicts)-1, -1, -1):
-        if "surname " in list_of_dicts[x]['english']:
-            if list_of_dicts[x]['traditional'] == list_of_dicts[x+1]['traditional']:
-                list_of_dicts.pop(x)
-    
+            elif word == characters[1]:
+                print("simp")
+                hanzi = characters[1]
+
+            pinyin = char_and_pinyin[1]
+            pinyin = pinyin.rstrip()
+            pinyin = pinyin.rstrip("]")
+
+            if "surname " in english:
+                print("lines[index+1].split(" ",1)[0]", lines[index+1].split(" ",1)[0])
+
+                if ((hanzi == lines[index+1].split(" ",1)[0]) or (hanzi == lines[index+1].split(" ")[1])):
+                    continue
+
+            parsed['hanzi'] = hanzi
+            parsed['pinyin'] = pinyin
+            parsed['english'] = english
+
+            return parsed
+    return None
+            
+def findWord(word):
+        try:
+            result = helper(word)
+
+            # if (result is None):
+            #     simplifiedData = [helper(word, "simplified")]
+            #     if (len(simplifiedData) is not None):
+            #         return simplifiedData
+            #     raise(TypeError)
+            if (result is None):
+                raise(TypeError)
+            elif (len(result) > 1):
+                print("EXCEPT: Multiple objects found")
+            
+            print("TRY: Character or word exists")
+            return [result]
+        except TypeError:
+            result = None
+            print("EXCEPT: Character or word does not exist")
+
+
 def index(request):
-    #make each line into a dictionary
-    print("Parsing dictionary . . .")
-    for line in dict_lines:
-            parse_line(line)
-    
-    #remove entries for surnames from the data (optional):
 
-    #print("Removing Surnames . . .")
-    #remove_surnames()
+    inputW = request.GET["word"]
 
-    print("Saving to database...")
-    for one_dict in list_of_dicts:
-        new_word = CharWord(traditional = one_dict["traditional"], simplified = one_dict["simplified"], english = one_dict["english"], pinyin = one_dict["pinyin"])
-        new_word.save()
-    
-    #CharWord.objects.all().delete()
+    data = findWord(inputW)
 
-    #q = CharWord.objects.filter(simplified='漂亮').values()
-    #print(q)
+    if (data is not None):
 
+        if len(data) == 1:
+            data = dict(data[0])
+            json_data = json.dumps(data, ensure_ascii=False)
 
+        elif len(data) > 1:
+            new_data = data[0]
+            json_data = json.dumps(new_data, ensure_ascii=False) 
+      
+        data = []
+        new_data = []
 
-    return HttpResponse("Database successfully created.")
+        return JsonResponse(json_data,safe=False,json_dumps_params={'ensure_ascii':False})
+    else:
+        data = {}
+        new_data = {}
+        return HttpResponse("Character does not exist")
