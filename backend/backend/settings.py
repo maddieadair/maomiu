@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import django_on_heroku # type: ignore
 from dotenv import load_dotenv
 
 load_dotenv()
+django_on_heroku.settings(locals())
 
 CEDICT_PATH = str(os.getenv('CEDICT_PATH'))
 
