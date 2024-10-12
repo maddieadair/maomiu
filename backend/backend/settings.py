@@ -33,8 +33,16 @@ SECRET_KEY = 'django-insecure-lcv-r(g^3ytq@=gp!yd2g=_n87tk6d@06*vet)0*v2sr_+4l4+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['maomiu-433c7bfaa649.herokuapp.com', 'localhost', '0.0.0.0', '127.0.0.1:8000', '*']
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
+# SECURITY WARNING: don't run with debug turned on in production!
+if not IS_HEROKU_APP:
+    DEBUG = True
+    
+if IS_HEROKU_APP:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]", "0.0.0.0"]
 # Application definition
 
 INSTALLED_APPS = [
