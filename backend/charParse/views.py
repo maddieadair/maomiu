@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
+import requests
 import json
 
 def helper(word):
