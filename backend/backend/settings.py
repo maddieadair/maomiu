@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-lcv-r(g^3ytq@=gp!yd2g=_n87tk6d@06*vet)0*v2sr_+4l4+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://maomiu-433c7bfaa649.herokuapp.com', 'maomiu-433c7bfaa649.herokuapp.com', 'localhost', '0.0.0.0', '127.0.0.1:8000', '*']
+ALLOWED_HOSTS = ['maomiu-433c7bfaa649.herokuapp.com', 'maomiu-433c7bfaa649.herokuapp.com', 'localhost', '0.0.0.0', '127.0.0.1:8000', '*']
 
 # Application definition
 
@@ -135,7 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
