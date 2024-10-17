@@ -29,7 +29,7 @@ frontend/build
 # debug
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
-froteend/yarn-error.log*
+frontend/yarn-error.log*
 
 frontend/.vercel
 
