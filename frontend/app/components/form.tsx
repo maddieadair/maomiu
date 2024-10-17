@@ -323,7 +323,6 @@ export default function Form(props: ChildProps) {
 
   useEffect(() => {
     let bubbleSpan: HTMLSpanElement|null= document.querySelector("span");
-    // let input = document.getElementById("traceableCharacters");
 
     let val: number = tempLayout.traceableCharacters;
     let min: number = 0;
@@ -332,11 +331,7 @@ export default function Form(props: ChildProps) {
 
     bubbleSpan!.textContent = val.toString();
     bubbleSpan!.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
-    //   bubbleSpan.style.display = "block"
 
-    // input.onblur = (() => {
-    //     bubbleSpan.style.display = "none"
-    // })
   }, [tempLayout.traceableCharacters]);
 
   return (
@@ -399,14 +394,14 @@ export default function Form(props: ChildProps) {
           </select>
         </div>
 
-        <div className="flex flex-col gap-y-12">
+        <div className="flex flex-col gap-y-8">
           <label
             className="font-newsreader italic text-lg"
             htmlFor="traceableCharacters"
           >
             Traceable Characters
           </label>
-          <div className="bg-pearl p-8 rounded-2xl flex flex-col gap-y-12 border-carbon border-[1px]">
+          <div className="bg-pearl p-8 rounded-2xl flex flex-col gap-y-16 border-carbon border-[1px]">
             <div className="flex gap-x-4 items-center">
               <p>0</p>
               <div className="w-full flex flex-col items-center">

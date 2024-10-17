@@ -11,7 +11,7 @@ export default function Hero() {
           width="0"
           height="0"
           priority={true}
-          className="w-auto h-24"
+          className="w-auto h-24 sm:h-32"
         ></Image>
       </div>
       <div className="flex flex-col gap-y-6">
