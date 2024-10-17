@@ -416,9 +416,6 @@ const Test = ({ data }) => {
   const wordInfo = data.wordInfo;
   const layoutData = data.layoutInfo;
 
-  console.log("wordInfo", wordInfo);
-  console.log("layoutData", layoutData);
-
   let hasTitle: boolean = layoutData.title.length > 0;
 
   let tempArr: Character[] = [];
@@ -524,8 +521,7 @@ const Test = ({ data }) => {
 
 export default function MyDocument({ data }: {data: any}) {
   let parsedData: any = JSON.parse(JSON.stringify(data));
-  console.log(parsedData)
-
+  
   return (
     <Document>
       <Test data={parsedData} />

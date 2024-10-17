@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
 
   return Promise.all(urls.map((url) => fetch(url).then((r) => r.json())))
     .then((data) => {
-        console.log("word data", data)
         return NextResponse.json({ data: data }, { status: 200 });
     })
     .catch((error) => {
