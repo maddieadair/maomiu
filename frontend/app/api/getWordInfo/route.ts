@@ -23,6 +23,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ data: data }, { status: 200 });
     })
     .catch((error) => {
-      return NextResponse.json({ error: "Character data could not be found" }, { status: 404 });
+      return NextResponse.json({ error: error }, { status: 404 });
     });
 }
