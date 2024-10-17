@@ -396,7 +396,7 @@ export default function CharacterForm(props: ChildProps) {
 
             let wordInfoArr: Array<Character> = [];
             for (var i = 0; i < wordData["data"].length; i++) {
-              let parsedString: Character = JSON.parse(wordData["data"][i]);
+              let parsedString: Character = wordData["data"][i];
               wordInfoArr.push(parsedString);
             }
             setPinyin(changeGeneratedPinyin(wordInfoArr[0]["pinyin"]));
