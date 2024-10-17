@@ -15,7 +15,7 @@ interface ChildProps {
   setMode: Dispatch<SetStateAction<string>>;
   showComponent: boolean;
   setShowComponent: Dispatch<SetStateAction<boolean>>;
-};
+}
 
 type Errors = {
   wordError?: string;
@@ -23,18 +23,18 @@ type Errors = {
   engError?: string;
   charPinError?: string;
   charEngError?: string;
-}
+};
 
 type CharError = {
   pinyin?: string;
   english?: string;
-}
+};
 
 type Character = {
   hanzi: string;
   pinyin: string;
   english: string;
-}
+};
 
 export default function CharacterForm(props: ChildProps) {
   const [word, setWord] = useState<string>("");
@@ -389,7 +389,7 @@ export default function CharacterForm(props: ChildProps) {
             if (wordData.error) {
               errorArr.push(new Error("Word data could not be found"));
             }
-            setFetchMessage(`Could not find data for ${word}`);
+            setFetchMessage(`Could not find data for the given word.`);
             throw errorArr;
           } else {
             setStrokeInfo(strokeData.data);
@@ -530,27 +530,31 @@ export default function CharacterForm(props: ChildProps) {
         </div>
 
         {fetchMessage ===
-          "Input too short. Please enter a word that is at least 1 character long." ||
-        fetchMessage ===
-          "Invalid word. Please enter a valid word in Chinese." ? (
-          <div className="flex gap-x-2 text-yellow-600 border-[1px] border-yellow-600 rounded-md bg-yellow-50 p-2 items-center">
-            <IoWarningOutline />
+        "Input too short. Please enter a word that is at least 1 character long." ? (
+          <div className="flex gap-x-4 sm:gap-x-2 text-yellow-600 border-[1px] border-yellow-600 rounded-md bg-yellow-50 p-2 items-center">
+            <IoWarningOutline className="size-8 sm:size-4" />
             <p>{fetchMessage}</p>
           </div>
-        ) : fetchMessage === `Could not find data for ${word}` ? (
+        ) : fetchMessage ===
+          "Invalid word. Please enter a valid word in Chinese." ? (
+          <div className="flex gap-x-4 sm:gap-x-2 text-yellow-600 border-[1px] border-yellow-600 rounded-md bg-yellow-50 p-2 items-center">
+            <IoWarningOutline className="size-6 sm:size-4" />
+            <p>{fetchMessage}</p>
+          </div>
+        ) : fetchMessage === `Could not find data for the given word.` ? (
           <div className="flex gap-x-2 text-red-500 border-[1px] border-red-500 rounded-md bg-red-50 p-2 items-center">
-            <RxCrossCircled />
+            <RxCrossCircled className="size-6 sm:size-4" />
             <p>{fetchMessage}</p>
           </div>
         ) : fetchMessage ===
           "Word already exists. Please try a different one." ? (
           <div className="flex gap-x-2 text-red-500 border-[1px] border-red-500 rounded-md bg-red-50 p-2 items-center">
-            <RxCrossCircled />
+            <RxCrossCircled className="size-6 sm:size-4" />
             <p>{fetchMessage}</p>
           </div>
         ) : fetchMessage === "Success!" ? (
           <div className="flex gap-x-2 text-green-700 border-[1px] border-green-700 rounded-md bg-green-50 p-2 items-center">
-            <HiOutlineCheckCircle />
+            <HiOutlineCheckCircle className="size-6 sm:size-4" />
             <p>{fetchMessage}</p>
           </div>
         ) : null}
