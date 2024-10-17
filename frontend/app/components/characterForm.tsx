@@ -554,7 +554,7 @@ export default function CharacterForm(props: ChildProps) {
           </div>
         ) : fetchMessage === "Success!" ? (
           <div className="flex gap-x-2 text-green-700 border-[1px] border-green-700 rounded-md bg-green-50 p-2 items-center">
-            <HiOutlineCheckCircle className="size-6 sm:size-4" />
+            <HiOutlineCheckCircle className="size-4" />
             <p>{fetchMessage}</p>
           </div>
         ) : null}
